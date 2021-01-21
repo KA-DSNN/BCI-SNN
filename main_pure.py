@@ -9,7 +9,6 @@ import numpy.matlib as npm
 import pandas as pd
 import matplotlib.pyplot as plt
 import scipy.io as sio
-import pickle
 from sklearn.model_selection import KFold
 
 from keras.utils.np_utils import to_categorical
@@ -20,10 +19,8 @@ from bcilib import ssvep_utils as su
 warnings.filterwarnings('ignore')
 
 # SNN
-import pickle 
-import time 
-
 from snnlib.spiking_model_pure import *
+import time 
 
 # Debug
 from pprint import pprint
@@ -149,10 +146,13 @@ for subject in mcnn_training_data.keys():
     train_labels = np.array([labels[x, :10] for x in index_array[420:]])
     test_labels = np.array([labels[x, :10] for x in index_array[420:]])
 
-    print(train_data)
-    print(test_data)
-    print(train_labels)
-    print(test_labels)
+    # print("TRAIN_DATA_MEAD: ", train_data.mean())
+    # print("TEST_DATA_MEAD: ", test_data.mean())
+
+    # print("TRAIN DATA: ", train_data)
+    # print("TEST_DATA: ", test_data)
+    # print("TRAIN_LABELS: ", train_labels)
+    # print("TEST_LABELS: ", test_labels)
 
     names = 'spiking_model'
     best_acc = 0  # best test accuracy
@@ -189,8 +189,12 @@ for subject in mcnn_training_data.keys():
                 snn.zero_grad()
                 optimizer.zero_grad()
 
-                images2 = images2.div(12.)
-                
+                # images2 = images2.div(11.)
+                images2[images2[:, :, :] < 1] = 0.
+                images2[images2[:, :, :] > 0] = 1.
+                print("Mean: ", images2.mean())
+                # print("Image2: ", images2)
+
                 images2 = images2.float().to(device)
 
                 # print("MAIN SNN Input shape: ", images2.shape)
@@ -208,7 +212,7 @@ for subject in mcnn_training_data.keys():
 
                 outputs = snn(images2)
                 print(outputs)
-                print(outputs.shape)
+                # print(outputs.shape)
                 labels_ = torch.zeros(batch_size * 2, 20).scatter_(1, labels2.view(-1, 1), 1)
                 loss = criterion(outputs.cpu(), labels_)
                 running_loss += loss.item()
@@ -239,7 +243,11 @@ for subject in mcnn_training_data.keys():
                     if label[j] == 1.:
                         labels2[0] = j
 
-                images2 = images2.div(12.)
+                # images2 = images2.div(11.)
+                images2[images2[:, :, :] < 1] = 0.
+                images2[images2[:, :, :] > 0] = 1.
+                print("Mean: ", images2.mean())
+                # print("Image2: ", images2)
 
                 inputs = images2.to(device)
                 optimizer.zero_grad()
