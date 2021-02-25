@@ -8,7 +8,7 @@ thresh = 0.5  # neuronal threshold
 lens = 0.5/3  # hyper-parameters of approximate function
 decay = 0.8  # decay constants
 num_classes = 10
-batch_size = 1
+batch_size = 210
 learning_rate = 5e-4
 num_epochs = 20  # max epoch
 

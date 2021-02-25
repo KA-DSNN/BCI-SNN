@@ -125,6 +125,13 @@ for subject in all_segmented_data.keys():
     ccnn_training_data[subject]['label'] = labels
 
 
+subject_accuracy = []
+
+snn = SCNN()
+snn.to(device)
+criterion = nn.MSELoss()
+optimizer = torch.optim.Adam(snn.parameters(), lr=learning_rate)
+
 # %%
 for subject in mcnn_training_data.keys():
     dataset = mcnn_training_data[subject]['train_data']
@@ -164,11 +171,6 @@ for subject in mcnn_training_data.keys():
     pprint(train_data.shape)
     pprint(labels.shape)
 
-    snn = SCNN()
-    snn.to(device)
-    criterion = nn.MSELoss()
-    optimizer = torch.optim.Adam(snn.parameters(), lr=learning_rate)
-
     for real_epoch in range(num_epochs):
         running_loss = 0
         start_time = time.time()
@@ -190,9 +192,9 @@ for subject in mcnn_training_data.keys():
                 optimizer.zero_grad()
 
                 # images2 = images2.div(11.)
-                images2[images2[:, :, :] < 1] = 0.
-                images2[images2[:, :, :] > 0] = 1.
-                print("Mean: ", images2.mean())
+#                 images2[images2[:, :, :] < 1] = 0.
+#                 images2[images2[:, :, :] > 0] = 1.
+#                 print("Mean: ", images2.mean())
                 # print("Image2: ", images2)
 
                 images2 = images2.float().to(device)
@@ -244,9 +246,9 @@ for subject in mcnn_training_data.keys():
                         labels2[0] = j
 
                 # images2 = images2.div(11.)
-                images2[images2[:, :, :] < 1] = 0.
-                images2[images2[:, :, :] > 0] = 1.
-                print("Mean: ", images2.mean())
+#                 images2[images2[:, :, :] < 1] = 0.
+#                 images2[images2[:, :, :] > 0] = 1.
+#                 print("Mean: ", images2.mean())
                 # print("Image2: ", images2)
 
                 inputs = images2.to(device)
@@ -297,7 +299,10 @@ for subject in mcnn_training_data.keys():
                 'epoch': epoch,
                 'acc_record': acc_record,
             }
+            subject_accuracy.append(acc_record)
             if not os.path.isdir('checkpoint'):
                 os.mkdir('checkpoint')
             torch.save(state, './checkpoint/ckpt' + names + '.t7')
             best_acc = acc
+
+pprint(subject_accuracy)
