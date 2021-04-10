@@ -18,7 +18,7 @@ def __gen_ST(N, T, rate, mode = 'regular'):
         return spikes
     else:
         raise Exception('mode must be regular or Poisson')
-        
+
 def spiketrains(N, T, rates, mode = 'poisson'):
     '''
     *N*: number of neurons
@@ -99,7 +99,7 @@ def plotLIF(U, S, Vplot = 'all', staggering= 1, ax1=None, ax2=None, **kwargs):
 
 
 
-input_shape = [28,28]
+input_shape = [8, 220]
 
 
 def to_one_hot(t, width):
@@ -109,7 +109,7 @@ def to_one_hot(t, width):
 
 
 def image2spiketrain(x,y,gain=50,min_duration=None, max_duration=500):
-    y = to_one_hot(y, 10)
+    y = to_one_hot(y, 12)
     if min_duration is None:
         min_duration = max_duration-1
     batch_size = x.shape[0]
@@ -120,7 +120,7 @@ def image2spiketrain(x,y,gain=50,min_duration=None, max_duration=500):
         st = spiketrains(T = T[i], N = Nin, rates=gain*x[i].reshape(-1)).astype(np.float32)
         allinputs[i] =  np.pad(st,((0,max_duration-T[i]),(0,0)),'constant')
     allinputs = np.transpose(allinputs, (1,0,2))
-    allinputs = allinputs.reshape(allinputs.shape[0],allinputs.shape[1],1, 28,28)
+    allinputs = allinputs.reshape(allinputs.shape[0],allinputs.shape[1], 8, 220)
 
     alltgt = np.zeros([max_duration, batch_size, 10], dtype=np.float32)
     for i in range(batch_size):

@@ -8,9 +8,52 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 import pytorch_lightning as pl
+import snnlib.snn_utils as snn_utils
 # from aermanager.preprocess import accumulate_frames, slice_by_time
 # from aermanager.cvat_dataset_generator import load_rois_lut, load_annotated_slice
 # from tqdm import tqdm
+
+lam = 1
+div = 12
+
+class RasterizeSlice:
+    def __init__(self):
+        pass
+    def __call__(self, tensor_x, tensor_y):
+        # raster = (np.random.rand(200, *tensor_x.size()) < tensor_x.numpy() / 2).astype(float)
+        # raster = (np.random.poisson(lam, (200, *tensor_x.size())) > tensor_x.numpy() / div).astype(float)
+        
+        ## Barrier
+        # tensor_x[tensor_x < 0] = 0
+        ## Lift 
+        # tensor_x = tensor_x - tensor_x.min()
+        ## ABS
+        # tensor_x = tensor_x.abs()
+        
+        raster = torch.poisson(tensor_x / .001).expand([200, 8, 220, 1])
+        # raster = torch.from_numpy(raster).float()
+        # raster = snn_utils.image2spiketrain(tensor_x, tensor_y, max_duration=100, gain=20)
+        return raster, tensor_y
+
+class CustomTensorDataset:
+    """TensorDataset with support of transforms.
+    """
+    def __init__(self, tensor_x, tensor_y, transform=None):
+        self.tensor_x = tensor_x
+        self.tensor_y = tensor_y
+        self.transform = transform
+
+    def __getitem__(self, index):
+        x = self.tensor_x[index]
+        y = self.tensor_y[index]
+        
+        if self.transform:
+            x, y = self.transform(x, y)
+
+        return x, y
+
+    def __len__(self):
+        return self.tensor_x.size(0)
 
 class CNN(pl.LightningModule):
     def __init__(self):
