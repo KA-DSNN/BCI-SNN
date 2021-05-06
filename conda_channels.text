@@ -1,0 +1,16 @@
+# conda_forge
+jupyterlab
+cudatoolkit 
+keras 
+ipywidgets
+
+# default
+numpy
+matplotlib
+scipy 
+
+# pytorch
+pytorch
+
+# pip 
+torch-summary

@@ -8,7 +8,7 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 import pytorch_lightning as pl
-import snnlib.snn_utils as snn_utils
+# import snnlib.snn_utils as snn_utils
 # from aermanager.preprocess import accumulate_frames, slice_by_time
 # from aermanager.cvat_dataset_generator import load_rois_lut, load_annotated_slice
 # from tqdm import tqdm
@@ -30,7 +30,8 @@ class RasterizeSlice:
         ## ABS
         # tensor_x = tensor_x.abs()
         
-        raster = torch.poisson(tensor_x / .001).expand([200, 8, 220, 1])
+        raster = torch.poisson(tensor_x).expand([200, 8, 220, 1])
+
         # raster = torch.from_numpy(raster).float()
         # raster = snn_utils.image2spiketrain(tensor_x, tensor_y, max_duration=100, gain=20)
         return raster, tensor_y

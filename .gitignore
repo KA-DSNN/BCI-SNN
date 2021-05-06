@@ -1,6 +1,14 @@
+# BCI-SNN
+data
+*.old
+
 # Miniconda3 
 miniconda3
 packages
+
+# PyTorch
+lightning_logs
+checkpoints
 
 # IDE 
 .vscode
