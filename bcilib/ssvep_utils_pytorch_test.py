@@ -30,7 +30,7 @@ class RasterizeSlice:
         ## ABS
         # tensor_x = tensor_x.abs()
         
-        raster = torch.poisson(tensor_x).expand([200, 8, 220, 1])
+        raster = torch.poisson(tensor_x).expand([8, 220, 220, 1])
 
         # raster = torch.from_numpy(raster).float()
         # raster = snn_utils.image2spiketrain(tensor_x, tensor_y, max_duration=100, gain=20)
@@ -67,8 +67,11 @@ class CNN(pl.LightningModule):
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout(0.25),
-            nn.Conv2d(32, 16, (10, 1), 1, bias=False),
-            nn.BatchNorm2d(16),
+            nn.Conv2d(32, 64, (10, 1), 1, bias=False),
+            nn.BatchNorm2d(64),
+            nn.Dropout(0.25),
+            nn.Conv2d(64, 32, (10, 1), 1, bias=False),
+            nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout(0.25),
             nn.Flatten(),
