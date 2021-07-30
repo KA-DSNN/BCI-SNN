@@ -1,6 +1,7 @@
 # BCI-SNN
 data
 *.old
+models
 
 # Miniconda3 
 miniconda3

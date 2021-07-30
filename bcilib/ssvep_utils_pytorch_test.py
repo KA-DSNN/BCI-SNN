@@ -63,7 +63,7 @@ class CNN(pl.LightningModule):
         # self.val_dataloader = dataloader_val
         self.network = nn.Sequential(
             # 
-            nn.Conv2d(8, 32, (8, 1), 1, bias=False),
+            nn.Conv2d(32, 32, (8, 1), 1, bias=False),
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Dropout(0.25),
